@@ -1,0 +1,35 @@
+# ── docker-compose.yml ───────────────────────────────────────
+# Orchestrates FastAPI + Streamlit services
+# Usage: docker-compose up --build
+# ─────────────────────────────────────────────────────────────
+
+version: '3.8'
+
+services:
+
+  # FastAPI model serving backend
+  api:
+    build: .
+    container_name: dhl_delay_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/model:/app_root/app/model
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Streamlit frontend
+  dashboard:
+    build: .
+    container_name: dhl_delay_dashboard
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:8000/predict
+    command: streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0
