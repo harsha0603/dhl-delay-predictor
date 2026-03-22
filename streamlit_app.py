@@ -216,7 +216,7 @@ if predict_clicked:
                         {'⚠️' if risk=='HIGH' else '📌' if risk=='MEDIUM' else '✅'}
                         Business Recommendation
                     </strong><br>
-                    <span style="color:#1a1a1a;">{msg}</span>
+                    <span style="color:#ffffff;">{msg}</span>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -224,8 +224,8 @@ if predict_clicked:
                 st.markdown("<br>", unsafe_allow_html=True)
                 with st.expander("📋 View Input Summary"):
                     summary_df = {
-                        "Feature"      : list(payload.keys()),
-                        "Value"        : list(payload.values())
+                        "Feature" : list(payload.keys()),
+                        "Value"   : [str(v) for v in payload.values()]
                     }
                     st.table(summary_df)
 
